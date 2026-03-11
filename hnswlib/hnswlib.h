@@ -21,6 +21,8 @@
 #endif
 
 #if defined(USE_AVX) || defined(USE_SSE)
+
+#if defined(USE_AVX512) ||  defined(USE_AVX)
 #ifdef _MSC_VER
 #include <intrin.h>
 #include <stdexcept>
@@ -43,6 +45,7 @@ static uint64_t xgetbv(unsigned int index) {
     return ((uint64_t)edx << 32) | eax;
 }
 #endif
+#endif
 
 #if defined(USE_AVX512)
 #include <immintrin.h>
@@ -59,6 +62,7 @@ static uint64_t xgetbv(unsigned int index) {
 // Adapted from https://github.com/Mysticial/FeatureDetector
 #define _XCR_XFEATURE_ENABLED_MASK  0
 
+#if defined(USE_AVX512) ||  defined(USE_AVX)
 static bool AVXCapable() {
     int cpuInfo[4];
 
@@ -85,7 +89,9 @@ static bool AVXCapable() {
     }
     return HW_AVX && avxSupported;
 }
+#endif
 
+#if defined(USE_AVX512)
 static bool AVX512Capable() {
     if (!AVXCapable()) return false;
 
@@ -115,6 +121,7 @@ static bool AVX512Capable() {
     return HW_AVX512F && avx512Supported;
 }
 #endif
+#endif
 
 #include <queue>
 #include <vector>
@@ -128,7 +135,7 @@ typedef size_t labeltype;
 class BaseFilterFunctor {
  public:
     virtual bool operator()(hnswlib::labeltype id) { return true; }
-    virtual ~BaseFilterFunctor() {};
+    virtual ~BaseFilterFunctor() {}
 };
 
 template<typename dist_t>

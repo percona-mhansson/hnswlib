@@ -682,7 +682,7 @@ class HierarchicalNSW : public AlgorithmInterface<dist_t> {
         return size;
     }
 
-    void saveIndex(const std::string &location) {
+    void saveIndex(const std::string &location) override {
         std::ofstream output(location, std::ios::binary);
         std::streampos position;
 
@@ -951,7 +951,7 @@ class HierarchicalNSW : public AlgorithmInterface<dist_t> {
     * Adds point. Updates the point if it is already in the index.
     * If replacement of deleted elements is enabled: replaces previously deleted point if any, updating it with new point
     */
-    void addPoint(const void *data_point, labeltype label, bool replace_deleted = false) {
+    void addPoint(const void *data_point, labeltype label, bool replace_deleted = false) override {
         if ((allow_replace_deleted_ == false) && (replace_deleted == true)) {
             throw std::runtime_error("Replacement of deleted elements is disabled in constructor");
         }
@@ -1225,7 +1225,7 @@ class HierarchicalNSW : public AlgorithmInterface<dist_t> {
                         tableint *datal = (tableint *) (data + 1);
                         for (int i = 0; i < size; i++) {
                             tableint cand = datal[i];
-                            if (cand < 0 || cand > max_elements_)
+                            if (cand > max_elements_)
                                 throw std::runtime_error("cand error");
                             dist_t d = fstdistfunc_(data_point, getDataByInternalId(cand), dist_func_param_);
                             if (d < curdist) {
@@ -1268,7 +1268,7 @@ class HierarchicalNSW : public AlgorithmInterface<dist_t> {
 
 
     std::priority_queue<std::pair<dist_t, labeltype >>
-    searchKnn(const void *query_data, size_t k, BaseFilterFunctor* isIdAllowed = nullptr) const {
+    searchKnn(const void *query_data, size_t k, BaseFilterFunctor* isIdAllowed = nullptr) const override {
         std::priority_queue<std::pair<dist_t, labeltype >> result;
         if (cur_element_count == 0) return result;
 
@@ -1289,7 +1289,7 @@ class HierarchicalNSW : public AlgorithmInterface<dist_t> {
                 tableint *datal = (tableint *) (data + 1);
                 for (int i = 0; i < size; i++) {
                     tableint cand = datal[i];
-                    if (cand < 0 || cand > max_elements_)
+                    if (cand > max_elements_)
                         throw std::runtime_error("cand error");
                     dist_t d = fstdistfunc_(query_data, getDataByInternalId(cand), dist_func_param_);
 
