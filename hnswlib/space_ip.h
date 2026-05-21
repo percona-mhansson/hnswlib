@@ -394,7 +394,7 @@ class InnerProductSpace : public SpaceInterface<float> {
         return &dim_;
     }
 
-~InnerProductSpace() {}
+~InnerProductSpace() override {}
 };
 
 }  // namespace hnswlib

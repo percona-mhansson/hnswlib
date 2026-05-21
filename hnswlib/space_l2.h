@@ -249,7 +249,7 @@ class L2Space : public SpaceInterface<float> {
         return &dim_;
     }
 
-    ~L2Space() {}
+    ~L2Space() override {}
 };
 
 static int
@@ -319,6 +319,6 @@ class L2SpaceI : public SpaceInterface<int> {
         return &dim_;
     }
 
-    ~L2SpaceI() {}
+    ~L2SpaceI() override {}
 };
 }  // namespace hnswlib
